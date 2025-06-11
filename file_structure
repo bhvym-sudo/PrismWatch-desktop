@@ -1,0 +1,17 @@
+prismwatch/
+├── core/
+│   ├── adb_controller.py      # ADB command execution
+│   ├── package_analyzer.py    # App/package analysis
+│   ├── process_analyzer.py    # Process tree visualization
+│   ├── network_monitor.py     # Network traffic analysis
+│   └── models.py              # Data models
+├── ui/
+│   ├── main_window.py         # Main GUI window
+│   ├── app_list.py            
+│   ├── permission_viewer.py   
+│   ├── process_viewer.py      
+│   └── network_viewer.py      
+├── utils/
+│   ├── file_exporter.py      
+│   └── helpers.py             
+└── main.py                    
