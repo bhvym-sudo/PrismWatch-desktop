@@ -35,10 +35,10 @@ class PackageAnalyzer:
         permissions = {
             'requested': [],
             'granted': [],
-            'dangerous': []  # (can add later)
+            'dangerous': []  
         }
 
-        # Requested permissions
+
         requested_match = re.search(r'requested permissions:(.*?)(^\S|\Z)', text, re.DOTALL | re.MULTILINE)
         if requested_match:
             requested_block = requested_match.group(1)
@@ -48,7 +48,6 @@ class PackageAnalyzer:
             ]
             permissions['requested'] = requested
 
-        # Granted permissions
         granted_match = re.search(r'grantedPermissions:(.*?)(^\S|\Z)', text, re.DOTALL | re.MULTILINE)
         if granted_match:
             granted_block = granted_match.group(1)

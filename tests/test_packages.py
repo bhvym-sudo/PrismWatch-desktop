@@ -8,15 +8,15 @@ def debug_package_analysis(package_name):
 
     print(f"\n=== Debugging package: {package_name} ===")
 
-    # Get and display raw output (optional)
+
     print("\n[RAW OUTPUT]")
     raw_output = adb.execute_command(f"dumpsys package {package_name}")
     print(raw_output[:2000] + ("..." if len(raw_output) > 2000 else ""))
 
-    # Get parsed info
+
     info = analyzer.get_package_info(package_name)
 
-    # Display parsed information
+
     print("\n[PARSED INFORMATION]")
     print(f"Package: {info['package']}")
 
@@ -39,7 +39,7 @@ def debug_package_analysis(package_name):
 
 def main():
     test_packages = [
-        'com.android.chrome',   # Chrome
+        'com.android.chrome',  
     ]
 
     all_results = {}
