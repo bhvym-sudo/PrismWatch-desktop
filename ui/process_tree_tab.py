@@ -49,7 +49,7 @@ class ProcessTreeTab(QWidget):
         header_layout.addWidget(self.show_all_checkbox)
         
         
-        self.refresh_btn = QPushButton("🔄 Refresh Processes")
+        self.refresh_btn = QPushButton("Refresh Processes")
         self.refresh_btn.clicked.connect(self.refresh_processes)
         self.refresh_btn.setEnabled(False)
         header_layout.addWidget(self.refresh_btn)
@@ -175,7 +175,7 @@ class ProcessTreeTab(QWidget):
             title_suffix = f" (UID: {self.current_uid})"
             
         if not processes_to_show:
-            item = QListWidgetItem("📋 No processes found")
+            item = QListWidgetItem("No processes found")
             item.setForeground(Qt.gray)
             item.setFlags(Qt.NoItemFlags)
             self.process_list.addItem(item)
@@ -279,21 +279,21 @@ class ProcessTreeTab(QWidget):
         
         
         if process_data['UID'] == self.current_uid:
-            details += f"🎯 This process belongs to the selected package: {self.current_package}\n"
+            details += f"This process belongs to the selected package: {self.current_package}\n"
         elif process_data['UID'] == 'root':
-            details += "🔐 This is a root system process\n"
+            details += "This is a root system process\n"
         elif process_data['UID'] == 'system':
-            details += "⚙️ This is a system process\n"
+            details += "This is a system process\n"
         elif process_data['UID'].startswith('u0_'):
-            details += "📱 This is a user application process\n"
+            details += "This is a user application process\n"
         else:
-            details += "❓ This is an unknown process type\n"
+            details += "This is an unknown process type\n"
             
         
         details += f"\nSecurity Notes:\n"
         details += f"- Process running with UID: {process_data['UID']}\n"
         if process_data['UID'] == 'root':
-            details += "- ⚠️ Root processes have full system access\n"
+            details += "- Root processes have full system access\n"
         elif process_data['UID'] == self.current_uid:
             details += f"- This process can access all data belonging to {self.current_package}\n"
             

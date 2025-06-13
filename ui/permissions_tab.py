@@ -36,7 +36,7 @@ class PermissionsTab(QWidget):
         header_layout.addStretch()
         
         
-        self.refresh_btn = QPushButton("🔄 Refresh Permissions")
+        self.refresh_btn = QPushButton("Refresh Permissions")
         self.refresh_btn.clicked.connect(self.refresh_permissions)
         self.refresh_btn.setEnabled(False)
         header_layout.addWidget(self.refresh_btn)
@@ -105,12 +105,12 @@ class PermissionsTab(QWidget):
         self.package_label.setStyleSheet("font-size: 14pt; font-weight: bold; color: #888888;")
         
         
-        placeholder_item = QListWidgetItem("📱 Select a package from the Home tab to view permissions")
+        placeholder_item = QListWidgetItem("Select a package from the Home tab to view permissions")
         placeholder_item.setForeground(Qt.gray)
         placeholder_item.setFlags(Qt.NoItemFlags)  
         self.requested_list.addItem(placeholder_item)
         
-        placeholder_item2 = QListWidgetItem("📱 Select a package from the Home tab to view permissions")
+        placeholder_item2 = QListWidgetItem("Select a package from the Home tab to view permissions")
         placeholder_item2.setForeground(Qt.gray)
         placeholder_item2.setFlags(Qt.NoItemFlags)
         self.granted_list.addItem(placeholder_item2)
@@ -146,12 +146,12 @@ class PermissionsTab(QWidget):
             
             
             requested_perms = permissions.get('requested', [])
-            self.populate_permissions_list(self.requested_list, requested_perms, "📋")
+            self.populate_permissions_list(self.requested_list, requested_perms, "")
             self.requested_count_label.setText(f"Count: {len(requested_perms)}")
             
             
             granted_perms = permissions.get('granted', [])
-            self.populate_permissions_list(self.granted_list, granted_perms, "✅")
+            self.populate_permissions_list(self.granted_list, granted_perms, "")
             self.granted_count_label.setText(f"Count: {len(granted_perms)}")
             
             
@@ -169,12 +169,12 @@ class PermissionsTab(QWidget):
             self.status_message.emit(error_msg)
             
             
-            error_item = QListWidgetItem(f"❌ Error: {str(e)}")
+            error_item = QListWidgetItem(f"Error: {str(e)}")
             error_item.setForeground(Qt.red)
             error_item.setFlags(Qt.NoItemFlags)
             self.requested_list.addItem(error_item)
             
-            error_item2 = QListWidgetItem(f"❌ Error: {str(e)}")
+            error_item2 = QListWidgetItem(f"Error: {str(e)}")
             error_item2.setForeground(Qt.red)
             error_item2.setFlags(Qt.NoItemFlags)
             self.granted_list.addItem(error_item2)
@@ -214,5 +214,4 @@ class PermissionsTab(QWidget):
             list_widget.addItem(item)
             
     def on_permission_selected(self):
-        """Handle permission selection to show details"""
         selected_items = []

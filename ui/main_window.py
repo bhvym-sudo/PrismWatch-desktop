@@ -43,9 +43,9 @@ class MainWindow(QMainWindow):
         self.process_tree_tab = ProcessTreeTab()
         
         
-        self.tab_widget.addTab(self.home_tab, "🏠 Home")
-        self.tab_widget.addTab(self.permissions_tab, "🔒 Permissions")
-        self.tab_widget.addTab(self.process_tree_tab, "🌳 Process Tree")
+        self.tab_widget.addTab(self.home_tab, "Home")
+        self.tab_widget.addTab(self.permissions_tab, "Permissions")
+        self.tab_widget.addTab(self.process_tree_tab, "Process Tree")
         
         
         self.status_bar = QStatusBar()
