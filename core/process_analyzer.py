@@ -22,7 +22,7 @@ class ProcessAnalyzer:
         header_line = lines[0]
         headers = re.split(r'\s+', header_line.strip())
 
-        # Handle modern Android header (USER instead of UID)
+        
         if 'UID' not in headers and 'USER' in headers:
             headers = [h.replace('USER', 'UID') for h in headers]
 

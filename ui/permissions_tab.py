@@ -26,7 +26,7 @@ class PermissionsTab(QWidget):
         layout.setSpacing(15)
         layout.setContentsMargins(20, 20, 20, 20)
         
-        # Header section
+        
         header_layout = QHBoxLayout()
         
         self.package_label = QLabel("No package selected")
@@ -35,7 +35,7 @@ class PermissionsTab(QWidget):
         
         header_layout.addStretch()
         
-        # Refresh button
+        
         self.refresh_btn = QPushButton("🔄 Refresh Permissions")
         self.refresh_btn.clicked.connect(self.refresh_permissions)
         self.refresh_btn.setEnabled(False)
@@ -43,10 +43,10 @@ class PermissionsTab(QWidget):
         
         layout.addLayout(header_layout)
         
-        # Create splitter for side-by-side lists
+        
         splitter = QSplitter(Qt.Horizontal)
         
-        # Requested Permissions Section
+        
         requested_group = QGroupBox("Requested Permissions")
         requested_layout = QVBoxLayout(requested_group)
         
@@ -54,14 +54,14 @@ class PermissionsTab(QWidget):
         self.requested_list.setAlternatingRowColors(True)
         requested_layout.addWidget(self.requested_list)
         
-        # Requested permissions count
+        
         self.requested_count_label = QLabel("Count: 0")
         self.requested_count_label.setStyleSheet("color: #888888; font-size: 9pt;")
         requested_layout.addWidget(self.requested_count_label)
         
         splitter.addWidget(requested_group)
         
-        # Granted Permissions Section
+        
         granted_group = QGroupBox("Granted Permissions")
         granted_layout = QVBoxLayout(granted_group)
         
@@ -69,18 +69,18 @@ class PermissionsTab(QWidget):
         self.granted_list.setAlternatingRowColors(True)
         granted_layout.addWidget(self.granted_list)
         
-        # Granted permissions count
+        
         self.granted_count_label = QLabel("Count: 0")
         self.granted_count_label.setStyleSheet("color: #888888; font-size: 9pt;")
         granted_layout.addWidget(self.granted_count_label)
         
         splitter.addWidget(granted_group)
         
-        # Set equal sizes for both panels
+        
         splitter.setSizes([400, 400])
         layout.addWidget(splitter)
         
-        # Permission Details Section
+        
         details_group = QGroupBox("Permission Details")
         details_layout = QVBoxLayout(details_group)
         
@@ -92,11 +92,11 @@ class PermissionsTab(QWidget):
         
         layout.addWidget(details_group)
         
-        # Connect list selection events
+        
         self.requested_list.itemSelectionChanged.connect(self.on_permission_selected)
         self.granted_list.itemSelectionChanged.connect(self.on_permission_selected)
         
-        # Add initial message
+        
         self.show_no_package_message()
         
     def show_no_package_message(self):
@@ -104,10 +104,10 @@ class PermissionsTab(QWidget):
         self.package_label.setText("No package selected")
         self.package_label.setStyleSheet("font-size: 14pt; font-weight: bold; color: #888888;")
         
-        # Add placeholder items
+        
         placeholder_item = QListWidgetItem("📱 Select a package from the Home tab to view permissions")
         placeholder_item.setForeground(Qt.gray)
-        placeholder_item.setFlags(Qt.NoItemFlags)  # Make it non-selectable
+        placeholder_item.setFlags(Qt.NoItemFlags)  
         self.requested_list.addItem(placeholder_item)
         
         placeholder_item2 = QListWidgetItem("📱 Select a package from the Home tab to view permissions")
@@ -116,7 +116,7 @@ class PermissionsTab(QWidget):
         self.granted_list.addItem(placeholder_item2)
     
     def refresh_permissions(self):
-    # You can later fill this function to reload permissions when user clicks refresh
+    
         pass
 
         
@@ -127,34 +127,34 @@ class PermissionsTab(QWidget):
         self.package_label.setStyleSheet("font-size: 14pt; font-weight: bold; color: #0078d4;")
         self.refresh_btn.setEnabled(True)
         
-        # Clear previous data
+        
         self.requested_list.clear()
         self.granted_list.clear()
         self.details_text.setPlainText("Loading permissions...")
         
         try:
-            # Initialize ADB and analyzer if not already done
+            
             if not self.adb:
                 self.adb = ADBController()
                 self.package_analyzer = PackageAnalyzer(self.adb)
             
             self.status_message.emit(f"Loading permissions for {package_name}...")
             
-            # Get package info
+            
             package_info = self.package_analyzer.get_package_info(package_name)
             permissions = package_info.get('permissions', {})
             
-            # Populate requested permissions
+            
             requested_perms = permissions.get('requested', [])
             self.populate_permissions_list(self.requested_list, requested_perms, "📋")
             self.requested_count_label.setText(f"Count: {len(requested_perms)}")
             
-            # Populate granted permissions
+            
             granted_perms = permissions.get('granted', [])
             self.populate_permissions_list(self.granted_list, granted_perms, "✅")
             self.granted_count_label.setText(f"Count: {len(granted_perms)}")
             
-            # Update details
+            
             self.details_text.setPlainText(
                 f"Permissions loaded for {package_name}\n"
                 f"Requested: {len(requested_perms)} permissions\n"
@@ -168,7 +168,7 @@ class PermissionsTab(QWidget):
             error_msg = f"Error loading permissions: {str(e)}"
             self.status_message.emit(error_msg)
             
-            # Show error in lists
+            
             error_item = QListWidgetItem(f"❌ Error: {str(e)}")
             error_item.setForeground(Qt.red)
             error_item.setFlags(Qt.NoItemFlags)
@@ -191,24 +191,24 @@ class PermissionsTab(QWidget):
             return
             
         for perm in permissions:
-            # Clean up permission name for display
+            
             display_perm = perm.strip()
             
-            # Color code based on permission type
+            
             item = QListWidgetItem(f"{icon} {display_perm}")
             
             if display_perm.startswith('android.permission.'):
-                # System permissions - different colors based on sensitivity
+                
                 if any(sensitive in display_perm.lower() for sensitive in 
                        ['camera', 'microphone', 'location', 'contacts', 'sms', 'phone']):
-                    item.setForeground(Qt.red)  # High risk
+                    item.setForeground(Qt.red)  
                 elif any(moderate in display_perm.lower() for moderate in 
                          ['storage', 'write', 'read', 'internet']):
-                    item.setForeground(Qt.yellow)  # Medium risk
+                    item.setForeground(Qt.yellow)  
                 else:
-                    item.setForeground(Qt.white)  # Normal
+                    item.setForeground(Qt.white)  
             else:
-                # Custom permissions
+                
                 item.setForeground(Qt.cyan)
                 
             list_widget.addItem(item)

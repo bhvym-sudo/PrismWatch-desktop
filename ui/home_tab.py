@@ -28,7 +28,7 @@ class HomeTab(QWidget):
         layout.setSpacing(20)
         layout.setContentsMargins(20, 20, 20, 20)
         
-        # Device Connection Status Section
+        
         device_group = QGroupBox("Device Connection Status")
         device_layout = QVBoxLayout(device_group)
         
@@ -36,43 +36,43 @@ class HomeTab(QWidget):
         self.device_status_list.setMaximumHeight(100)
         device_layout.addWidget(self.device_status_list)
         
-        # Refresh button for device connection
+        
         refresh_btn = QPushButton("🔄 Refresh Connection")
         refresh_btn.clicked.connect(self.check_device_connection)
         device_layout.addWidget(refresh_btn)
         
         layout.addWidget(device_group)
         
-        # App Selection Section
+        
         app_group = QGroupBox("Application Selection")
         app_layout = QVBoxLayout(app_group)
         
-        # Instructions
+        
         instruction_label = QLabel("Select an installed application to analyze:")
         instruction_label.setWordWrap(True)
         app_layout.addWidget(instruction_label)
         
-        # App dropdown
+        
         self.app_combo = QComboBox()
         self.app_combo.setEnabled(False)
         self.app_combo.currentTextChanged.connect(self.on_app_selected)
         app_layout.addWidget(self.app_combo)
         
-        # Refresh apps button
+        
         refresh_apps_btn = QPushButton("🔄 Refresh App List")
         refresh_apps_btn.clicked.connect(self.load_installed_apps)
         refresh_apps_btn.setEnabled(False)
         self.refresh_apps_btn = refresh_apps_btn
         app_layout.addWidget(refresh_apps_btn)
         
-        # Selected app info
+        
         self.selected_app_label = QLabel("No application selected")
         self.selected_app_label.setStyleSheet("color: #888888; font-style: italic;")
         app_layout.addWidget(self.selected_app_label)
         
         layout.addWidget(app_group)
         
-        # Info Section
+        
         info_group = QGroupBox("Information")
         info_layout = QVBoxLayout(info_group)
         
@@ -90,7 +90,7 @@ class HomeTab(QWidget):
         
         layout.addWidget(info_group)
         
-        # Add stretch to push everything to top
+        
         layout.addStretch()
         
     def check_device_connection(self):
@@ -98,15 +98,15 @@ class HomeTab(QWidget):
         self.device_status_list.clear()
         
         try:
-            # Initialize ADB controller
+            
             self.adb = ADBController()
             
-            # Test basic ADB connection
+            
             result = self.adb.execute_command("echo 'test'", timeout=5)
             if result == "test":
                 self.add_status_item("✅ ADB Connection: Connected", True)
                 
-                # Check if device is rooted
+                
                 try:
                     root_result = self.adb.execute_command("whoami", use_su=True, timeout=10)
                     if "root" in root_result.lower():
@@ -178,19 +178,19 @@ class HomeTab(QWidget):
             self.status_message.emit("Loading installed applications...")
             self.package_analyzer = PackageAnalyzer(self.adb)
             
-            # Get installed apps (package_name, uid)
+            
             self.installed_apps = self.package_analyzer.get_installed_apps()
             
-            # Clear and populate combo box
+            
             self.app_combo.clear()
             self.app_combo.addItem("-- Select an application --")
             
-            # Sort apps by package name
+            
             sorted_apps = sorted(self.installed_apps, key=lambda x: x[0])
             
             for package_name, uid in sorted_apps:
                 display_name = package_name
-                # Show more user-friendly names for common packages
+                
                 if package_name.startswith("com.android."):
                     display_name = f"{package_name} (System)"
                 elif package_name.startswith("com.google."):
@@ -211,9 +211,9 @@ class HomeTab(QWidget):
             self.selected_app_label.setStyleSheet("color: #888888; font-style: italic;")
             return
             
-        # Get the actual package name from combo box data
+        
         current_index = self.app_combo.currentIndex()
-        if current_index > 0:  # Skip the first "Select an application" item
+        if current_index > 0:  
             package_name = self.app_combo.itemData(current_index)
             if package_name:
                 self.selected_app_label.setText(f"Selected: {package_name}")
