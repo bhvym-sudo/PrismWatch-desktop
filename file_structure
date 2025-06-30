@@ -3,15 +3,13 @@ prismwatch/
 │   ├── adb_controller.py      
 │   ├── package_analyzer.py    
 │   ├── process_analyzer.py    
-│   ├── network_monitor.py     
-│   └── models.py              
+│   ├── uid_mapper.py   
+|              
 ├── ui/
-│   ├── main_window.py         
-│   ├── app_list.py            
-│   ├── permission_viewer.py   
-│   ├── process_viewer.py      
-│   └── network_viewer.py      
-├── utils/
-│   ├── file_exporter.py      
-│   └── helpers.py             
+│   ├── main_window.py                   
+│   ├── permission_tab.py   
+│   ├── process_tree_tab.py      
+│   |--- home_tab.py
+│        
+│              
 └── main.py                    

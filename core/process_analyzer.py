@@ -11,7 +11,7 @@ class ProcessAnalyzer:
         processes = self._parse_process_output(raw_output)
 
         if filter_uid:
-            processes = [p for p in processes if p['UID'] == filter_uid or p['USER'] == filter_uid]
+            processes = [p for p in processes if p['UID'] == filter_uid]
 
         return processes
 

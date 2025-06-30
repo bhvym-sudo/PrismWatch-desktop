@@ -7,6 +7,10 @@ from .style import DARK_THEME
 from .home_tab import HomeTab
 from .permissions_tab import PermissionsTab
 from .process_tree_tab import ProcessTreeTab
+from .live_behavior_tab import LiveBehaviorTab
+from ui.shell_tab import ShellTab
+
+
 
 class MainWindow(QMainWindow):
     
@@ -41,11 +45,16 @@ class MainWindow(QMainWindow):
         self.home_tab = HomeTab()
         self.permissions_tab = PermissionsTab()
         self.process_tree_tab = ProcessTreeTab()
+        self.live_behavior_tab = LiveBehaviorTab()
+        self.shell_tab = ShellTab()
         
-        
+             
         self.tab_widget.addTab(self.home_tab, "Home")
         self.tab_widget.addTab(self.permissions_tab, "Permissions")
         self.tab_widget.addTab(self.process_tree_tab, "Process Tree")
+        self.tab_widget.addTab(self.live_behavior_tab, "Live Behavior")
+        self.tab_widget.addTab(self.shell_tab, "Shell")  
+
         
         
         self.status_bar = QStatusBar()
@@ -60,6 +69,8 @@ class MainWindow(QMainWindow):
         
         self.package_selected.connect(self.permissions_tab.load_package_permissions)
         self.package_selected.connect(self.process_tree_tab.load_package_processes)
+        self.package_selected.connect(self.live_behavior_tab.load_live_activity)
+
         
         
         self.home_tab.status_message.connect(self.update_status)
