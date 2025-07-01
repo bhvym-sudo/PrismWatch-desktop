@@ -1,64 +1,70 @@
-# core/shell_backend.py
 import subprocess
-import os
-import platform
+import threading
+import queue
+from typing import Optional
 from .adb_controller import ADBController, ADBError
 
-
 class ShellBackend:
-    def __init__(self):
-        self.adb = ADBController()
-        self.process =None
+    def __init__(self, adb_path: str = "./bin/adb", device_id: Optional[str] = None):
+        self.adb = ADBController(adb_path, device_id)
+        self.process = None
+        self.output_queue = queue.Queue()
+        self.running = False
 
-        # Make sure adb path is absolute and compatible
-        adb_path = self.adb.adb_path
-        if not os.path.isabs(adb_path):
-            adb_path = os.path.abspath(adb_path)
-        if platform.system() == "Windows" and not adb_path.endswith(".exe"):
-            adb_path += ".exe"
-        self.adb.adb_path = adb_path
-
-    def start_shell(self):
+    def start_interactive_shell(self):
         try:
-            cmd = [self.adb.adb_path]
-            if self.adb.device_id:
-                cmd.extend(["-s", self.adb.device_id])
-            cmd.append("shell")
-
+            cmd = self.adb._build_adb_cmd("su", use_su=False)
             self.process = subprocess.Popen(
                 cmd,
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
-                bufsize=1
+                bufsize=1,
+                universal_newlines=True
             )
-            return self.process
+            self.running = True
+            # Start output reader thread
+            threading.Thread(
+                target=self._read_output_loop,
+                daemon=True
+            ).start()
+            return True
         except Exception as e:
-            raise ADBError(f"Failed to start ADB shell: {str(e)}")
+            raise ADBError(f"Failed to start root shell: {str(e)}")
 
-    def send_input(self, command: str):
-        if not self.process or self.process.poll() is not None:
-            raise ADBError("ADB shell is not running")
+    def _read_output_loop(self):
+        while self.running and self.process and self.process.poll() is None:
+            try:
+                line = self.process.stdout.readline()
+                if line:
+                    self.output_queue.put(line)
+            except:
+                break
+
+    def get_output(self):
+        outputs = []
+        while not self.output_queue.empty():
+            outputs.append(self.output_queue.get())
+        return ''.join(outputs) if outputs else None
+
+    def send_command(self, command: str):
+        if not self.running or not self.process or self.process.poll() is not None:
+            raise ADBError("Shell is not running")
         try:
             self.process.stdin.write(command + "\n")
             self.process.stdin.flush()
         except Exception as e:
             raise ADBError(f"Failed to send command: {str(e)}")
 
-    def read_output_line(self):
-        if not self.process or self.process.poll() is not None:
-            return None
-        try:
-            return self.process.stdout.readline()
-        except Exception:
-            return None
-
     def stop_shell(self):
+        self.running = False
         if self.process:
             try:
+                self.process.stdin.write("exit\n")
+                self.process.stdin.flush()
+            except:
+                pass
+            finally:
                 self.process.terminate()
-                self.process.wait(timeout=1)
-            except Exception:
-                self.process.kill()
-            self.process = None
+                self.process = None
